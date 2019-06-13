@@ -1,77 +1,54 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""
-Copyright ? 1998 - 2018 Tencent. All Rights Reserved. 腾讯公司 版权所有
-
-"""
-
 import base64
-import httplib
 import json
 import urllib
-
+from dataclasses import dataclass, asdict
+from .message import Message
 import requests
 from requests.auth import HTTPBasicAuth
 
-from xinge_push.constant import *
 
-
-class TagTokenPair(object):
-    """
-    tag-token串，用来批量设置tag和token的对应关系
-    """
-
-    def __init__(self, tag, token):
-        self.tag = str(tag)
-        self.token = str(token)
-
-
-class XingeApp3(object):
-    PATH_PUSH_APP = '/v3/push/app'
-
-    IOS_MIN_ID = 2200000000
-
+class Xinge(object):
     def __init__(self, appId, secretKey):
         """
 
         :param appId: str, APP的唯一标识
         :param secretKey: str, 信鸽网站分配的通信密钥
         """
-        self.appId = int(appId)
-        self.secretKey = str(secretKey)
+        self.appId = appId
+        self.secretKey = secretKey
 
-    def PushApp(self, context, params):
-        """
-        TODO
-        """
-        return Xinge3Helper.PushApp(self.appId, self.secretKey, context, params)
+    def push_account(self, platform: str, account: str, message: Message):
+        if platform != "ios" and platform != "android":
+            raise ValueError("Invalid platform")
+        body = {
+            "audience_type": "account",
+            "account_list": [account],
+            "platform": platform,
+            "message": asdict(message),
+        }
+        if platform == "ios":
+            body["ios"] = {
+                "aps": {
+                    "alert": {
+                        "title": message.title,
+                        "subtitle": message.subtitle,
+                        "body": message.content,
+                    }
+                }
+            }
+        return Xinge3Helper.push(self.appId, self.secretKey, body)
 
 
 class Xinge3Helper(object):
-    URL = 'https://openapi.xg.qq.com/'
-    XINGE_PORT = 80
-    TIMEOUT = 10
-    HTTPS_METHOD = 'POST'
-    HTTPS_HEADERS = {'HOST': URL, 'Content-Type': 'application/json'}
-
-    STR_RET_CODE = 'ret_code'
-    STR_ERR_MSG = 'err_msg'
-    STR_RESULT = 'result'
+    URL = "https://openapi.xg.qq.com/v3/push/app"
+    STR_RET_CODE = "ret_code"
+    STR_ERR_MSG = "err_msg"
+    STR_RESULT = "result"
 
     @classmethod
-    def GenBase64EncodedStr(cls, appId, secretKey):
-        signSource = '%s:%s' % (appId, secretKey)
-        return base64.b64encode(signSource)
+    def push(cls, app_id, secret_key, body):
+        auth = HTTPBasicAuth(app_id, secret_key)
+        headers = {"Content-Type": "application/json"}
+        body = requests.post(cls.URL, auth=auth, json=body, headers=headers).json()
+        return body["ret_code"], body["err_msg"]
 
-    @classmethod
-    def PushApp(cls, app_id, secret_key , context, params):
-
-        push_app_url=cls.URL + 'push/app'
-        auth=HTTPBasicAuth(app_id, secret_key)
-
-        response = requests.post(push_app_url, auth=auth, json=context, headers=cls.HTTP_HEADERS)
-
-        retCode = ERR_RETURN_DATA
-        errMsg = ''
-        result = {}
-        return retCode, errMsg, result

@@ -9,13 +9,11 @@
 
 ## 兼容版本
 
-- Python 2.7
-- 需要使用到 base64 和 requests
+- Python 3.7
+- 需要使用到 requests
 
-```sbtshell
-➜  ~ sudo easy_install pip
-➜  ~ sudo pip install pybase64
-➜  ~ sudo pip install requests
+```shell
+➜  ~ pip install requests
 ```
 
 - 如需运行测试用例，需要安装 unittest
@@ -33,20 +31,12 @@ pip install unittest2
 ## 代码示例
 
 ```python
-import json
-import xinge_push
+from xinge_push import Xinge, Message
 
-#create XingeApp
-xinge = xinge_push.XingeApp(0, 'secret')
-
-#build your message
-msg = xinge_push.Message()
-msg.type = xinge_push.MESSAGE_TYPE_ANDROID_NOTIFICATION
-msg.title = 'some title'
-msg.content = 'some content'
-
-#call restful API
-ret_code, error_msg = xinge.PushSingleDevice('some_token', msg)
+xinge = Xinge('app id', 'secret key')
+message = Message(title="some title", content = "some content")
+xinge.push_account(platform="android", account="some account", message=message)
+ret_code, error_msg = xinge.push_account(platform="android", account="some account", message=message)
 if ret_code:
     print "push failed! retcode: {}, msg: {}".format(ret_code, error_msg)
 else:
