@@ -91,3 +91,6 @@ ENV/
 .idea/*
 
 xinge-api-python.iml
+
+# vscode
+.vscode
