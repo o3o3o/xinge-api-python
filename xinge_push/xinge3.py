@@ -27,7 +27,7 @@ class Xinge(object):
             "message": asdict(message),
         }
         if platform == "ios":
-            body["ios"] = {
+            body["message"]["ios"] = {
                 "aps": {
                     "alert": {
                         "title": message.title,
