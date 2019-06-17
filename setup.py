@@ -18,7 +18,7 @@ AUTHOR = "observer"
 AUTHOR_EMAIL = "764664@gmail.com"
 LICENSE = "MIT"
 
-URL = "https://github.com/xingePush/xinge-api-python"
+URL = "https://github.com/jie17/xinge-api-python"
 
 setuptools.setup(
     name=NAME,
