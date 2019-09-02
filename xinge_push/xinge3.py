@@ -1,7 +1,7 @@
 import base64
 import json
 import urllib
-from dataclasses import dataclass, asdict
+from dataclasses import asdict
 from .message import Message
 import requests
 from requests.auth import HTTPBasicAuth
@@ -17,12 +17,13 @@ class Xinge(object):
         self.appId = appId
         self.secretKey = secretKey
 
-    def push_account(self, platform: str, account: str, message: Message):
+    def push_account(self, platform: str, account: str, message: Message, all_device=True):
         if platform != "ios" and platform != "android":
             raise ValueError("Invalid platform")
         body = {
             "audience_type": "account",
             "account_list": [account],
+            "account_push_type": int(all_device),
             "platform": platform,
             "message": asdict(message),
         }
