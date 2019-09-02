@@ -5,7 +5,6 @@
 ## 概述
 
 欢迎使用信鸽 ServerSDK - Python 版本封装的开发包，具有最新版本的信鸽 API 功能。
-[下载地址](http://xg.qq.com/xg/ctr_index/download)
 
 ## 兼容版本
 
