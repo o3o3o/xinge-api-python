@@ -10,7 +10,7 @@ with open("xinge_push/__init__.py") as f:
 NAME = "xinge"
 
 DESCRIPTION = "xinge Push API for Python(http://xg.qq.com)."
-LONG_DESCRIPTION = open("README.rst").read()
+LONG_DESCRIPTION = open("README.md").read()
 
 KEYWORDS = ["xinge", "Android Push", "iOS Push", "push"]
 
@@ -25,6 +25,7 @@ setuptools.setup(
     version=VERSION,
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
+    long_description_content_type="text/markdown",
     platforms="any",
     classifiers=[
         "Programming Language :: Python :: 3",
